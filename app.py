@@ -49,8 +49,8 @@ with col_texto:
         st.subheader("Paso 3: Cortando el sólido en rebanadas")
         st.markdown("""
         * Si cortamos nuestro sólido 3D, cada rebanada es un **disco** (un círculo perfecto).
-        * El área de un círculo es $\pi r^2$.
-        * En nuestro plano, el radio $r$ es exactamente la altura de nuestra función $f(x)$.
+        * El área de un círculo es \pi r^2.
+        * En nuestro plano, el radio r es exactamente la altura de nuestra función f(x).
         """)
         n_discos = st.slider("Número de discos (rebanadas):", 3, 30, 5)
         st.warning(f"Aquí estamos aproximando el volumen usando {n_discos} cilindros. ¡Mira qué pasa con la forma si aumentas el número de discos!")
@@ -58,7 +58,7 @@ with col_texto:
     elif paso == "4. El volumen final (Integral)":
         st.subheader("Paso 4: Suma infinita (La Integral)")
         st.markdown("""
-        Si hacemos que el grosor de cada disco ($dx$) sea infinitamente pequeño, tendremos una cantidad infinita de discos perfectos.
+        Si hacemos que el grosor de cada disco (dx) sea infinitamente pequeño, tendremos una cantidad infinita de discos perfectos.
         
         Por lo tanto, sumamos infinitos discos usando la integral:
         """)
@@ -140,3 +140,56 @@ with col_grafica:
             height=500
         )
         st.plotly_chart(fig, use_container_width=True)
+
+
+# ==========================================================
+# --- NUEVA SECCIÓN AÑADIDA: PROBLEMAS DIFÍCILES ---
+# ==========================================================
+st.divider()
+st.header("🧠 Resolviendo los Problemas Difíciles: Paso a Paso")
+st.markdown("""
+En los problemas de nivel intermedio y avanzado, el método de discos básico no es suficiente. 
+A continuación, desglosamos las metodologías para enfrentar los tres casos más complejos.
+""")
+
+tab1, tab2, tab3 = st.tabs(["1. Método de Arandelas", "2. Ejes de Rotación Desplazados", "3. Cascarones Cilíndricos"])
+
+with tab1:
+    st.subheader("Sólidos con Huecos (Método de Arandelas)")
+    st.markdown("""
+    **¿Cuándo usarlo?** Cuando el área que vas a rotar **no** está completamente pegada al eje de rotación. Al girar, se genera un sólido con un espacio vacío en el centro.
+    
+    **El Algoritmo:**
+    1. **Identifica las funciones:** Localiza la curva que está más lejos del eje de rotación (Radio mayor, `R(x)`) y la curva más cercana al eje (Radio menor, `r(x)`).
+    2. **Busca los cortes:** Iguala las funciones `R(x) = r(x)` y resuelve para encontrar dónde se cruzan. Esos serán tus límites de integración `a` y `b`.
+    3. **Aplica el parche al volumen:** Al área del disco grande le restamos el área del disco pequeño antes de integrar.
+    """)
+    st.latex(r"V = \pi \int_{a}^{b} \left[ (R(x))^2 - (r(x))^2 \right] \, dx")
+
+with tab2:
+    st.subheader("Rotación en Ejes Diferentes a X o Y")
+    st.markdown("""
+    **¿Cuándo usarlo?** Cuando el problema te pide girar la región sobre una recta paralela, por ejemplo, `y = 2` o `x = -1`.
+    
+    **El Algoritmo:**
+    1. **Dibuja el nuevo eje:** Traza una línea mental o en papel en la coordenada dada.
+    2. **Ajusta las distancias (Radios):** El radio ya no es simplemente `f(x)`. Tienes que medir la distancia desde la función hasta el nuevo eje.
+        * Si el eje está **por debajo** de la función (ej. `y = -2`): El radio es `f(x) - (-2) = f(x) + 2`.
+        * Si el eje está **por encima** de la función (ej. `y = 5`): El radio es `5 - f(x)`.
+    3. **Plantea tu integral normal:** Usa el radio ajustado en el método de discos o arandelas.
+    """)
+    st.latex(r"V = \pi \int_{a}^{b} \left[ \text{Radio\_Ajustado}(x) \right]^2 \, dx")
+
+with tab3:
+    st.subheader("Método de Cascarones Cilíndricos")
+    st.markdown("""
+    **¿Cuándo usarlo?** Cuando te piden rotar alrededor del eje **Y**, pero despejar `x` en términos de `y` (para hacer `dy`) es matemáticamente un infierno o imposible.
+    
+    **El Algoritmo:**
+    1. **Cambia la perspectiva:** En lugar de rebanar en discos planos, imagina que construyes el sólido con "tubos" o cilindros anidados (como muñecas rusas).
+    2. **Mide el cilindro:**
+        * **Radio:** Para una rotación en el eje Y, el radio del tubo es simplemente la coordenada `x`.
+        * **Altura:** La altura del tubo es la función `f(x)`.
+    3. **Calcula el área lateral:** Si desenrollas ese cilindro, es un rectángulo con base `2 \pi r` y altura `h`.
+    """)
+    st.latex(r"V = 2\pi \int_{a}^{b} x \cdot f(x) \, dx")
